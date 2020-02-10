@@ -29,7 +29,18 @@ public:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	class USpringArmComponent* GetCameraBoom() const;
+
+	class UCameraComponent* GetCameraComponent() const;
+
 private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = Movement)
 	float BaseTurnRate = 10.0f;
 
