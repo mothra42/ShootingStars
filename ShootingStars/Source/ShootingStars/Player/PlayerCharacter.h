@@ -56,6 +56,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Telekinesis)
 	float TelekinesisRange = 3000.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = Telekinesis)
+	float TelekinesisVelocity = 5000.0f;
+
 	bool GetAimDirection(FVector& AimDirection); //has an out param
 
 	UFUNCTION(BlueprintCallable, Category = Telekinesis)

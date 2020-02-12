@@ -177,7 +177,7 @@ void APlayerCharacter::ReleaseMeteor(AActor* HeldMeteor)
 			{
 				UProjectileMovementComponent* ProjectileMovement = Meteor->ProjectileMovement;
 
-				ProjectileMovement->Velocity = (AimDirection.GetSafeNormal() * 5000);
+				ProjectileMovement->Velocity = (AimDirection.GetSafeNormal() * TelekinesisVelocity);
 			}
 		}
 	}
