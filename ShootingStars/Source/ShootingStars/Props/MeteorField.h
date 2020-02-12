@@ -23,6 +23,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SpawnMeteor();
+
 private:
-	class AVolume* Field;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* Root;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* Field;
+
+	UPROPERTY(EditDefaultsOnly, Category = Spawn)
+	TSubclassOf<class AMeteor> Meteor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Setup, meta = (AllowPrivateAccess = "true"))
+	TArray<USceneComponent*> SpawnPoints;
 };
