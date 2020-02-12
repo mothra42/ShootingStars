@@ -28,4 +28,3 @@ void AMeteor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

@@ -41,10 +41,27 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* TelekinesisHoldPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Setup, meta = (AllowPrivateAccess = "true"))
+	class APlayerController* PlayerController;
+
 	UPROPERTY(EditDefaultsOnly, Category = Movement)
 	float BaseTurnRate = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = Movement)
 	float BaseLookUpRate = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Telekinesis)
+	float TelekinesisRange = 3000.0f;
+
+	bool GetAimDirection(FVector& AimDirection); //has an out param
+
+	UFUNCTION(BlueprintCallable, Category = Telekinesis)
+	class AMeteor* PullMeteor();
+
+	UFUNCTION(BlueprintCallable, Category = Telekinesis)
+	void ReleaseMeteor(AActor* HeldMeteor);
 
 };
