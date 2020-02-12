@@ -37,10 +37,8 @@ void AMeteorField::Tick(float DeltaTime)
 
 void AMeteorField::SpawnMeteor()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Number of things"));
 	if (SpawnPoints.Num() > 0 && Meteor != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("WHAT"));
 		int32 RandIndex = FMath::RandRange(0, SpawnPoints.Num() - 1);
 		USceneComponent* SpawnPoint = SpawnPoints[RandIndex];
 		auto SpawnedActor = GetWorld()->SpawnActor<AActor>(Meteor);
