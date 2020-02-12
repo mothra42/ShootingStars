@@ -8,6 +8,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "../HUD/ShootingStarsHUD.h"
+#include "Components/SceneComponent.h"
+#include "../Props/Meteor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -37,6 +42,9 @@ APlayerCharacter::APlayerCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
+
+	TelekinesisHoldPoint = CreateDefaultSubobject<USceneComponent>(TEXT("TelekinesisHoldPoint"));
+	TelekinesisHoldPoint->SetupAttachment(Super::GetCapsuleComponent());
 }
 
 // Called when the game starts or when spawned
@@ -107,4 +115,70 @@ USpringArmComponent* APlayerCharacter::GetCameraBoom() const
 UCameraComponent* APlayerCharacter::GetCameraComponent() const
 {
 	return CameraComponent;
+}
+
+bool APlayerCharacter::GetAimDirection(FVector& AimDirection)
+{
+	auto HUD = PlayerController->GetHUD();
+	AShootingStarsHUD* ShootingStarsHUD = Cast<AShootingStarsHUD>(HUD);
+
+	if (ShootingStarsHUD != nullptr)
+	{
+		auto CrosshairLocation = ShootingStarsHUD->GetCrosshairDrawPosition();
+
+		FVector WorldLocation;
+		if (PlayerController != nullptr)
+		{
+			return PlayerController->DeprojectScreenPositionToWorld(
+				CrosshairLocation.X,
+				CrosshairLocation.Y,
+				WorldLocation,
+				AimDirection
+			);
+		}
+	}
+
+	return false;
+}
+
+AMeteor* APlayerCharacter::PullMeteor()
+{
+	FVector AimDirection;
+	if (GetAimDirection(AimDirection))
+	{
+		FHitResult HitResult;
+		auto StartLocation = CameraComponent->GetComponentLocation();
+		auto EndLocation = StartLocation + (AimDirection.GetSafeNormal() * TelekinesisRange);
+		
+		if (GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartLocation,
+			EndLocation,
+			ECollisionChannel::ECC_Visibility
+		))
+		{
+			AActor* CapturedMeteor = HitResult.GetActor();
+			return Cast<AMeteor>(CapturedMeteor);
+		}
+	}
+
+	return nullptr;
+}
+
+void APlayerCharacter::ReleaseMeteor(AActor* HeldMeteor)
+{
+	if (HeldMeteor != nullptr)
+	{
+		AMeteor* Meteor = Cast<AMeteor>(HeldMeteor);
+		if (Meteor != nullptr)
+		{
+			FVector AimDirection;
+			if (GetAimDirection(AimDirection))
+			{
+				UProjectileMovementComponent* ProjectileMovement = Meteor->ProjectileMovement;
+
+				ProjectileMovement->Velocity = (AimDirection.GetSafeNormal() * 5000);
+			}
+		}
+	}
 }
